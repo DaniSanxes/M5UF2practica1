@@ -5,6 +5,8 @@
  */
 package practica1;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -17,105 +19,142 @@ public class Practica1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        double res = 0;
-        String operacion;
-        boolean comprobar = false;
+        // TODO code application logic here
+               int num = 40;
 
-        do {
+        //vector de notes generades
+        Integer[] control = new Integer[num];
+        int max = 0;
+        int min = 0;
+        int indMaxNota, indMinNota;
+        int postEval;
 
-            String numero1;
-            do {
-                System.out.println("\n Introdueix el primer numero. ");
-                numero1 = sc.nextLine();
-            } while (!numero1.matches("[+-]?[\\d]*[.]?[\\d]+"));
-            double nume1 = Double.parseDouble(numero1);
-            double n1 = new Double(numero1);
+        //Genera notes random entre 1 i 10
+        for (int i = 0; i < control.length; i++) {
+            control[i] = (int) (Math.random() * 11);
+        }
+        //Es busca la mes gran
+        postEval = 11;
+        for (int i = 0; i < control.length; i++) {
+            int preEval = control[i];
+            if (preEval < postEval) {
+                min = preEval;
+                postEval = control[i];
+            }
+        }
+        //Es busca la mes petita
+        postEval = 0;
+        for (int i = 0; i < control.length; i++) {
+            int preEval = control[i];
+            if (preEval > postEval) {
+                max = preEval;
+                postEval = control[i];
+            }
+        }
+        //Alumnes de la classe
+        int[] listaClase = new int[num];
+        for (int i = 0; i < num; i++) {
+            listaClase[i] = i + 1;
+        }
+        //LLista per a facilitar us de index
+        List notes = Arrays.asList(control);
+        indMinNota = notes.indexOf(min) + 1;
+        indMaxNota = notes.indexOf(max) + 1;
 
-            do {
-                System.out.println("\n Operació? (Indica el signe)");
-                System.out.println("+ = sumar \n - = restar \n"
-                        + " x = multiplicar \n / = dividir \n * = elevar primer num al segon num."
-                        + "\n % = residu");
-                operacion = sc.nextLine();
-                if (operacion.equals("+") || operacion.equals("-") || operacion.equals("x")
-                        || operacion.equals("X") || operacion.equals("/") || operacion.equals("%")
-                        || operacion.equals("*")) {
-                    comprobar = true;
-                } else {
-                    comprobar = false;
+        //Comprobem
+        System.out.println("Mínim és: " + min);
+        System.out.println("Màxim és: " + max);
+        System.out.println("Index del mínim és : " + indMinNota);
+        System.out.println("Index del màxim és : " + indMaxNota);
+        System.out.println("Lista de classe :" + Arrays.toString(listaClase));
+        System.out.println("Array de Notes :" + notes);
+
+        //notes "practiques"
+        int[] pract = new int[num];
+        for (int i = 0; i < pract.length; i++) {
+            pract[i] = (int) (Math.random() * 11);
+        }
+        //qualificacions
+        float[] qualif = new float[num];
+        for (int i = 0; i < control.length; i++) {
+            qualif[i]
+                    = (((float) control[i]
+                    + (float) pract[i])
+                    / 2);
+        }
+        System.out.println("Práctiques      :" + Arrays.toString(pract));
+        System.out.println("Qualificacions :" + Arrays.toString(qualif));
+
+        //estadística de qualif
+        float[] estadistica = new float[10];
+
+        for (int i = 0; i < 10; i++) {
+            float count = 0;
+            float sum = 0;
+            for (int j = 0; j < control.length; j++) {
+                if ((i < qualif[j]) && ((i + 1) >= qualif[j])) {
+                    sum += qualif[j];
+                    count += 1;
                 }
-            } while (comprobar != true);
+            }
+            if (count != 0) {
+                estadistica[i] = ((float) count / num);
+            } else {
+                estadistica[i] = 0;
+            }
+            double sol = (Math.round(estadistica[i] * 10000.0)) / 100.0;
+            System.out.println("Estadística nota tram <="
+                    + (i + 1) + " = "
+                    + sol + "%");
+        }
+        //Aprovats i suspesos
+        int[] aprovats = new int[num];
+        int[] supesos = new int[num];
+        int cAprovats = 0;
+        int cSuspesos = 0;
+        for (int i = 0; i < num; i++) {
+            if (qualif[i] < 5) {
+                aprovats[i] = i;
+                cAprovats += 1;
+            } else {
+                supesos[i] = i;
+                cSuspesos += 1;
+            }
+        }
+        System.out.println("Relació d'aprovats per nº de llista: "
+                + Arrays.toString(aprovats));
+        System.out.println("Relació d'aprovats per nº de lista: "
+                + Arrays.toString(supesos));
 
-            String numero2;
-            do {
-                System.out.println("\n Introdueix el segon numero.");
-                numero2 = sc.nextLine();
-            } while (!numero2.matches("[+-]?[\\d]*[.]?[\\d]+"));
-            double nume2 = Double.parseDouble(numero2);
-            double n2 = new Double(numero2);
+        //Resumen de aprovats i supesos
+        int i = 0;
+        int x = 0;
+        int[] a = new int[cAprovats];
+        int[] s = new int[cSuspesos];
+        while (i < aprovats.length) {
+            if (aprovats[i] != 0) {
+                a[x] = aprovats[i];
+                i++;
+                x++;
+            } else {
+                i++;
+            }
+        }
 
-            do {
-                comprobar = true;
-                switch (operacion) {
-                    case "+":
-                        res = n2 + n2;
-                        break;
-                    case "-":
-                        res = n1 - n2;
-                        break;
-                    case "x":
-                    case "X":
-                        res = n1 * n2;
-                        break;
-                    case "/":
-                        while (n2 == 0) {
-                            do {
-                                System.err.println(" Al denominador hi ha un zero \n"
-                                        + "per a  evitar errors coloca un altre valor.");
-                                numero2 = sc.nextLine();
-                            } while (!numero2.matches("[+-]?[\\d]*[.]?[\\d]+"));
-                            nume2 = Double.parseDouble(numero2);
-                            n2 = new Double(numero2);
-                        }
-                        res = n1 / n2;
-                        break;
-                    case "*":
-                        res = Math.pow(n1, n1);
-                        break;
-                    case "%":
-                        while (n2 == 0) {
-                            do {
-                                System.err.println(" Al denominador hi ha un zero \n"
-                                        + "per a  evitar errors coloca un altre valor.");
-                                numero2 = sc.nextLine();
-                            } while (!numero2.matches("[+-]?[\\d]*[.]?[\\d]+"));
-                            nume2 = Double.parseDouble(numero2);
-                            n2 = new Double(numero2);
-                        }
-                        res = n1 % n2;
-                        break;
-                }
-            } while (comprobar != true);
+        i = x = 0;
+        while (i < supesos.length) {
+            if (supesos[i] != 0) {
+                s[x] = supesos[i];
+                i++;
+                x++;
+            } else {
+                i++;
+            }
+        }
+        System.out.println("Resum aprovats per nº de llista: "
+                + Arrays.toString(a));
+        System.out.println("Resum suspesos per nº de llista: "
+                + Arrays.toString(s));
 
-            System.out.println("(" + numero1 + ") " + operacion + " (" + numero2 + ")" + " = " + res);
-            System.out.println("\n Vols continuar operant? \n");
-            System.out.println(" [s/n]");
-            do {
-                comprobar = true;
-                operacion = sc.nextLine();
-
-                switch (operacion) {
-                    case "s":
-                    case "S":
-                    case "n":
-                    case "N":
-                        break;
-                    default:
-                        System.err.println("\n Error, posa un valor vàlid. \n");
-                        comprobar = false;
-                }
-            } while (comprobar != true);
-        } while (operacion.equals("s") || operacion.equals("S"));
     }
 }
